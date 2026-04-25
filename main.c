@@ -1,4 +1,5 @@
 #include "main.h"
+#include "ascii.h"
 
 int main(void) {
 
@@ -35,7 +36,7 @@ int main(void) {
 	}
 	
 	getmaxyx(stdscr, max_y, max_x);
-	// init_pair(1, COLOR_CYAN, COLOR_BLACK);
+	init_pair(1, COLOR_CYAN, COLOR_BLACK);
 	
 	/* Initialize the window parameters */
 	init_win_params(&win, grid_size, max_x, max_y);
@@ -92,6 +93,34 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 	p_win->border.br = '+';
 }
 
+void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
+{
+    int divisor = 1;
+    int temp = number;
+    int espacement_x = 4;
+    int i = 0;
+    int digit;
+
+    while (temp >= 10)
+    {
+        divisor *= 10;
+        temp /= 10;
+    }
+
+    while (divisor > 0)
+    {
+        digit = (number / divisor) % 10;
+
+        for (int ligne = 0; ligne < 3; ligne++)
+        {
+            mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
+        }
+
+        divisor /= 10;
+        i++;
+    }
+}
+
 void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 {
 	int w, h, pos_x, pos_y;
@@ -115,7 +144,8 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
 			mvwvline(p_win->window, pos_y + 1, pos_x + w - 1, p_win->border.rs, h - 2);
 			if (grid[i][j] != 0)
-				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
+				// mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
+				draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, grid[i][j]);
 		}
 	}
 	wrefresh(p_win->window);
