@@ -47,6 +47,8 @@ int   game_best_score(int board_size, int board[board_size][board_size]);
 int   save_score(int score);
 int   all_time_best_score(void);
 void clean_win(WINDOW *local_win);
+WINDOW *create_newwin(int height, int width, int starty, int startx);
+int	get_grid_size(WINDOW *menu, int max_y, int max_x);
 void destroy_win(WINDOW *local_win);
 
 #endif

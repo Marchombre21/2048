@@ -157,3 +157,61 @@ void make_pairs(void)
 	init_pair(10, COLOR_BLACK, COLOR_RED);
 	init_pair(11, COLOR_RED, COLOR_BLACK);
 }
+
+int	get_grid_size(WINDOW *menu, int max_y, int max_x)
+{
+	int grid_size = 0;
+
+	mvwprintw(menu, max_y / 3, max_x / 2 - 2, "%s", "2048");
+	mvwprintw(menu, max_y / 2, max_x / 2 - 20, "%s", "What grid size do you want? 4x4 or 5x5?");
+	mvwprintw(menu, max_y * 0.75, max_x / 2 - 7, "%s", "(press 4 or 5)");
+	wrefresh(menu);
+	while (1)
+	{
+		grid_size = wgetch(menu) - 48;
+		if (grid_size == 4 || grid_size == 5)
+			break;
+	}
+
+	werase(menu);
+	wrefresh(menu);
+	delwin(menu);
+	clear();
+	refresh();
+	return (grid_size);
+}
+
+char	lose_menu(WINDOW *menu, int max_y, int max_x)
+{
+	char answer = 0;
+
+	mvwprintw(menu, max_y / 3, max_x / 2 - 2, "%s", "You lose!");
+	mvwprintw(menu, max_y / 2, max_x / 2 - 20, "%s", "Do you want restart?");
+	mvwprintw(menu, max_y * 0.75, max_x / 2 - 7, "%s", "(press Y or N)");
+	wrefresh(menu);
+	while (1)
+	{
+		answer = wgetch(menu);
+		#include <stdio.h>
+		printf()
+		if (answer == 4 || answer == 5)
+			break;
+	}
+
+	werase(menu);
+	wrefresh(menu);
+	delwin(menu);
+	clear();
+	refresh();
+	return (grid_size);
+}
+
+WINDOW *create_newwin(int height, int width, int starty, int startx)
+{	WINDOW *local_win;
+
+	local_win = newwin(height, width, starty, startx);
+	box(local_win, 0 , 0);
+	wrefresh(local_win);
+
+	return local_win;
+}

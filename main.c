@@ -3,27 +3,19 @@
 int main(void)
 {
 	WIN win;
+	WINDOW *menu;
 	int ch, max_y, max_x, grid_size;
 
-	(void) ch;
-	grid_size = 0;
+	grid_size = 4;
 	initscr();
 	start_color();
 	cbreak();
 	keypad(stdscr, TRUE);
 	noecho();
+	getmaxyx(stdscr, max_y, max_x);
 
-	printw("Chose if you want to play on a 4x4 grid or a 5x5 (press 4 or 5).");
-	while (grid_size != 4 && grid_size != 5)
-	{
-		grid_size = getch() - 48;
-		if (grid_size != 4 && grid_size != 5)
-			printw("\nYou can't chose another number than 4 or 5. Please play "
-			       "the game.");
-	}
-
-	clear();
-	refresh();
+	menu = create_newwin(max_y, max_x, (LINES - max_y) / 2, (COLS - max_x) / 2);
+	grid_size = get_grid_size(menu, max_y, max_x);
 
 	int grid[grid_size][grid_size];
 	for (int i = 0; i < grid_size; i++)
@@ -32,8 +24,6 @@ int main(void)
 
 	add_nb(grid_size, grid);
 	add_nb(grid_size, grid);
-
-	getmaxyx(stdscr, max_y, max_x);
 
 	/* Initialize the window parameters */
 	init_win_params(&win, grid_size, max_x, max_y);
@@ -62,8 +52,12 @@ int main(void)
 			break;
 		}
 		if (is_loose(grid_size, grid))
+		{
+			menu = create_newwin(max_y, max_x, (LINES - max_y) / 2, (COLS - max_x) / 2);
+			
 			break;
-		if (is_win(grid_size, grid))
+		}
+		// if (is_win(grid_size, grid))
 
 
 		clean_win(win.window);
