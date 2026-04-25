@@ -1,5 +1,6 @@
 #include "main.h"
 #include <stdlib.h>
+#include <time.h>
 
 void add_nb(int board_size, int board[board_size][board_size])
 {
@@ -11,6 +12,7 @@ void add_nb(int board_size, int board[board_size][board_size])
 		return;
 	while (true)
 	{
+		srand(time(NULL));
 		x = rand() % board_size;
 		y = rand() % board_size;
 		if (board[x][y] > 0)

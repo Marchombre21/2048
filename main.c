@@ -61,6 +61,7 @@ int main(void)
 				down(grid_size, grid);
 			break;
 		}
+		create_box(&win, grid_size, grid);
 	}
 	endwin();
 	return 0;
@@ -112,8 +113,8 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 	{
 		for (int j = 0; j < p_win->grid_size; j++)
 		{
-			pos_x = j * (w - 1);
-			pos_y = i * (h - 1);
+			pos_x = i * (w - 1);
+			pos_y = j * (h - 1);
 			mvwaddch(p_win->window, pos_y, pos_x, p_win->border.tl);
 			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
@@ -125,6 +126,8 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 			mvwvline(p_win->window, pos_y + 1, pos_x + w - 1, p_win->border.rs, h - 2);
 			if (grid[i][j] != 0)
 				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
+			else
+				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, " ");
 		}
 	}
 	wrefresh(p_win->window);

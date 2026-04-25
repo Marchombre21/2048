@@ -27,7 +27,7 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 			zero_reached = 0;
 			for (j = board_size - 1; j >= 0; j--)
 			{
-				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i][j + 1]))
+				if ((zero_reached && board[i][j]) || (j > 0 && board[i][j] == board[i][j + 1]))
 					return (1);
 				if (!zero_reached && !board[i][j])
 					zero_reached = 1;
@@ -41,7 +41,7 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 			zero_reached = 0;
 			for (i = 0; i < board_size; i++)
 			{
-				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
+				if ((zero_reached && board[i][j]) || (i < board_size - 1 && board[i][j] == board[i + 1][j]))
 					return (1);
 				if (!zero_reached && !board[i][j])
 					zero_reached = 1;
@@ -55,7 +55,7 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 			zero_reached = 0;
 			for (i = board_size - 1; i >= 0; i--)
 			{
-				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
+				if ((zero_reached && board[i][j]) || (i > 0 && board[i][j] == board[i + 1][j]))
 					return (1);
 				if (!zero_reached && !board[i][j])
 					zero_reached = 1;
