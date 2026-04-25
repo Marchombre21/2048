@@ -27,6 +27,19 @@ int get_pair_color(int number)
 		return (11);
 }
 
+void clean_win(WINDOW *local_win)
+{
+	werase(local_win);
+	wrefresh(local_win);
+}
+
+void destroy_win(WINDOW *local_win)
+{
+	werase(local_win);
+	wrefresh(local_win);
+	delwin(local_win);
+}
+
 void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 {
 	int w, h, pos_x, pos_y, pair_color;
@@ -44,7 +57,7 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x + w - 1, p_win->border.br);
-
+			
 			mvwhline(p_win->window, pos_y, pos_x + 1, p_win->border.ts, w - 2);
 			mvwhline(p_win->window, pos_y + h - 1, pos_x + 1, p_win->border.bs, w - 2);
 			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
@@ -53,6 +66,9 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 			{
 				pair_color = get_pair_color(grid[i][j]);
 				wattron(p_win->window, COLOR_PAIR(pair_color));
+				for (int bg_pos_y = pos_y + 1; bg_pos_y < pos_y + h - 1; bg_pos_y++)
+					for (int bg_pos_x = pos_x + 1; bg_pos_x < pos_x + w - 1; bg_pos_x++)
+						mvwaddch(p_win->window, bg_pos_y, bg_pos_x, ' ');
 				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
 				wattroff(p_win->window, COLOR_PAIR(pair_color));
 			}
@@ -63,33 +79,33 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 	wrefresh(p_win->window);
 }
 
-void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
-{
-	int divisor = 1;
-	int temp = number;
-	int espacement_x = 4;
-	int i = 0;
-	int digit;
+// void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
+// {
+// 	int divisor = 1;
+// 	int temp = number;
+// 	int espacement_x = 4;
+// 	int i = 0;
+// 	int digit;
 
-	while (temp >= 10)
-	{
-		divisor *= 10;
-		temp /= 10;
-	}
+// 	while (temp >= 10)
+// 	{
+// 		divisor *= 10;
+// 		temp /= 10;
+// 	}
 
-	while (divisor > 0)
-	{
-		digit = (number / divisor) % 10;
+// 	while (divisor > 0)
+// 	{
+// 		digit = (number / divisor) % 10;
 
-		for (int ligne = 0; ligne < 3; ligne++)
-		{
-			mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
-		}
+// 		for (int ligne = 0; ligne < 3; ligne++)
+// 		{
+// 			mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
+// 		}
 
-		divisor /= 10;
-		i++;
-	}
-}
+// 		divisor /= 10;
+// 		i++;
+// 	}
+// }
 
 void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 {
@@ -129,8 +145,8 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 
 void make_pairs(void)
 {
-	init_pair(1, COLOR_WHITE, COLOR_GREEN);
-	init_pair(2, COLOR_GREEN, COLOR_YELLOW);
+	init_pair(1, COLOR_GREEN, COLOR_WHITE);
+	init_pair(2, COLOR_WHITE, COLOR_YELLOW);
 	init_pair(3, COLOR_YELLOW, COLOR_CYAN);
 	init_pair(4, COLOR_CYAN, COLOR_MAGENTA);
 	init_pair(5, COLOR_MAGENTA, COLOR_RED);

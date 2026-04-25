@@ -13,25 +13,25 @@ void add_nb(int board_size, int board[board_size][board_size])
 		for (y = 0; y < board_size; y++)
 			if (board[x][y] == 0)
 				empty_cell++;
-	if (is_loose(board_size, board))
-		return;
 	srand(time(NULL));
 	rand_nb = rand() % 10;
 	if (!rand_nb)
 		rand_nb = 4;
 	else
 		rand_nb = 2;
+	empty_cell = rand() % empty_cell;
 	for (x = 0; x < board_size; x++)
 	{
 		for (y = 0; y < board_size; y++)
 		{
-			if (board[x][y] == 0)
-				empty_cell--;
-			if (empty_cell == 0)
+			if (empty_cell == 0 && board[x][y] == 0)
 			{
 				board[x][y] = rand_nb;
 				return;
 			}
+			if (board[x][y] == 0)
+				empty_cell--;
+
 		}
 	}
 }

@@ -12,6 +12,7 @@ int main(void)
 	cbreak();
 	keypad(stdscr, TRUE);
 	noecho();
+
 	printw("Chose if you want to play on a 4x4 grid or a 5x5 (press 4 or 5).");
 	while (grid_size != 4 && grid_size != 5)
 	{
@@ -33,7 +34,6 @@ int main(void)
 	add_nb(grid_size, grid);
 
 	getmaxyx(stdscr, max_y, max_x);
-	// init_pair(1, COLOR_CYAN, COLOR_BLACK);
 
 	/* Initialize the window parameters */
 	init_win_params(&win, grid_size, max_x, max_y);
@@ -42,8 +42,6 @@ int main(void)
 
 	while ((ch = getch()) != 27)
 	{
-		if (is_loose(grid_size, grid))
-			break;
 		switch (ch)
 		{
 		case KEY_LEFT:
@@ -63,8 +61,15 @@ int main(void)
 				down(grid_size, grid);
 			break;
 		}
+		if (is_loose(grid_size, grid))
+			break;
+		if (is_win(grid_size, grid))
+
+
+		clean_win(win.window);
 		create_box(&win, grid_size, grid);
 	}
+	destroy_win(win.window);
 	endwin();
 	return 0;
 }
