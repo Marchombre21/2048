@@ -7,22 +7,32 @@ void add_nb(int board_size, int board[board_size][board_size])
 	int rand_nb;
 	int x;
 	int y;
+	int empty_cell = 0;
 
+	for (x = 0; x < board_size; x++)
+		for (y = 0; y < board_size; y++)
+			if (board[x][y] == 0)
+				empty_cell++;
 	if (is_loose(board_size, board))
 		return;
-	while (true)
+	srand(time(NULL));
+	rand_nb = rand() % 10;
+	if (!rand_nb)
+		rand_nb = 4;
+	else
+		rand_nb = 2;
+	for (x = 0; x < board_size; x++)
 	{
-		srand(time(NULL));
-		x = rand() % board_size;
-		y = rand() % board_size;
-		if (board[x][y] > 0)
-			continue;
-		rand_nb = rand() % 10;
-		if (!rand_nb)
-			board[x][y] = 4;
-		else
-			board[x][y] = 2;
-		break;
+		for (y = 0; y < board_size; y++)
+		{
+			if (board[x][y] == 0)
+				empty_cell--;
+			if (empty_cell == 0)
+			{
+				board[x][y] = rand_nb;
+				return;
+			}
+		}
 	}
 }
 
