@@ -1,5 +1,4 @@
 #include "main.h"
-#include "ascii.h"
 
 int main(void) {
 
@@ -29,17 +28,17 @@ int main(void) {
 	{
 		for (int j = 0; j < grid_size; j++)
 			if (i == 2 && j == 1)
-				grid[i][j] = 2;
+				grid[i][j] = 128;
 			else
 				grid[i][j] = 0;
 
 	}
 	
 	getmaxyx(stdscr, max_y, max_x);
-	init_pair(1, COLOR_CYAN, COLOR_BLACK);
 	
 	/* Initialize the window parameters */
 	init_win_params(&win, grid_size, max_x, max_y);
+	make_pairs();
 	create_box(&win, grid_size, grid);
 
 	while((ch = getch()) != 27)
@@ -57,96 +56,4 @@ int main(void) {
 	}
 	endwin();
 	return 0;
-}
-void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
-{
-	p_win->grid_size = grid_size;
-	p_win->box_height = max_y * 0.2;
-	p_win->box_width = max_x * 0.2;
-
-	if (p_win->box_height < 3 || p_win->box_width < 8)
-		{
-			printw("Your terminal isn't big enough. Please enlarge it (press any key to close).");
-			while(1)
-			{
-				if (getch())
-					{
-						endwin();
-						exit(1);
-					}
-			}
-		}
-
-	p_win->height = grid_size * (p_win->box_height - 1) + 1;
-	p_win->width = grid_size * (p_win->box_width - 1) + 1;
-	p_win->starty = (max_y - p_win->height) / 2;
-	p_win->startx = (max_x - p_win->width) / 2;
-
-	p_win->window = newwin(p_win->height, p_win->width, p_win->starty, p_win->startx);
-	p_win->border.ls = '|';
-	p_win->border.rs = '|';
-	p_win->border.ts = '-';
-	p_win->border.bs = '-';
-	p_win->border.tl = '+';
-	p_win->border.tr = '+';
-	p_win->border.bl = '+';
-	p_win->border.br = '+';
-}
-
-void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
-{
-    int divisor = 1;
-    int temp = number;
-    int espacement_x = 4;
-    int i = 0;
-    int digit;
-
-    while (temp >= 10)
-    {
-        divisor *= 10;
-        temp /= 10;
-    }
-
-    while (divisor > 0)
-    {
-        digit = (number / divisor) % 10;
-
-        for (int ligne = 0; ligne < 3; ligne++)
-        {
-            mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
-        }
-
-        divisor /= 10;
-        i++;
-    }
-}
-
-void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
-{
-	int w, h, pos_x, pos_y;
-
-	w = p_win->box_width;
-	h = p_win->box_height;
-
-	for (int i = 0; i < p_win->grid_size; i++)
-	{
-		for (int j = 0; j < p_win->grid_size; j++)
-		{
-			pos_x = j * (w - 1);
-			pos_y = i * (h - 1);
-			mvwaddch(p_win->window, pos_y, pos_x, p_win->border.tl);
-			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
-			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
-			mvwaddch(p_win->window, pos_y + h - 1, pos_x + w - 1, p_win->border.br);
-
-			mvwhline(p_win->window, pos_y, pos_x + 1, p_win->border.ts, w - 2);
-			mvwhline(p_win->window, pos_y + h - 1, pos_x + 1, p_win->border.bs, w - 2);
-			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
-			mvwvline(p_win->window, pos_y + 1, pos_x + w - 1, p_win->border.rs, h - 2);
-			if (grid[i][j] != 0)
-				// mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
-				draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, grid[i][j]);
-		}
-	}
-	wrefresh(p_win->window);
 }

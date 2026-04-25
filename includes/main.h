@@ -27,6 +27,10 @@ void down(int board_size, int board[board_size][board_size]);
 void left(int board_size, int board[board_size][board_size]);
 void right(int board_size, int board[board_size][board_size]);
 void add_nb(int board_size, int board[board_size][board_size]);
+void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size]);
+void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number);
+void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y);
+void	make_pairs(void);
 
 
 
