@@ -21,7 +21,7 @@ SRC_FILES := main.c\
 	game.c\
 	itoa.c\
 	score_management.c\
-	strlen.c\
+	strlen.c
 
 OBJ := $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRC_FILES))
 DEPS := $(patsubst %.o, %.d, $(OBJ))

@@ -1,9 +1,8 @@
-#include "main.h"
 #include "ascii.h"
+#include "main.h"
 
-int	get_pair_color(int number)
+int get_pair_color(int number)
 {
-
 	if (number == 2)
 		return (1);
 	if (number == 4)
@@ -39,8 +38,8 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 	{
 		for (int j = 0; j < p_win->grid_size; j++)
 		{
-			pos_x = j * (w - 1);
-			pos_y = i * (h - 1);
+			pos_x = i * (w - 1);
+			pos_y = j * (h - 1);
 			mvwaddch(p_win->window, pos_y, pos_x, p_win->border.tl);
 			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
@@ -58,7 +57,7 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 				wattroff(p_win->window, COLOR_PAIR(pair_color));
 			}
 
-				// draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, grid[i][j]);
+			// draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, grid[i][j]);
 		}
 	}
 	wrefresh(p_win->window);
@@ -66,50 +65,51 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 
 void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
 {
-    int divisor = 1;
-    int temp = number;
-    int espacement_x = 4;
-    int i = 0;
-    int digit;
+	int divisor = 1;
+	int temp = number;
+	int espacement_x = 4;
+	int i = 0;
+	int digit;
 
-    while (temp >= 10)
-    {
-        divisor *= 10;
-        temp /= 10;
-    }
+	while (temp >= 10)
+	{
+		divisor *= 10;
+		temp /= 10;
+	}
 
-    while (divisor > 0)
-    {
-        digit = (number / divisor) % 10;
+	while (divisor > 0)
+	{
+		digit = (number / divisor) % 10;
 
-        for (int ligne = 0; ligne < 3; ligne++)
-        {
-            mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
-        }
+		for (int ligne = 0; ligne < 3; ligne++)
+		{
+			mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
+		}
 
-        divisor /= 10;
-        i++;
-    }
+		divisor /= 10;
+		i++;
+	}
 }
 
-void	init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
+void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 {
 	p_win->grid_size = grid_size;
 	p_win->box_height = max_y * 0.2;
 	p_win->box_width = max_x * 0.2;
 
 	if (p_win->box_height < 3 || p_win->box_width < 8)
+	{
+		printw("Your terminal isn't big enough. Please enlarge it (press any "
+		       "key to close).");
+		while (1)
 		{
-			printw("Your terminal isn't big enough. Please enlarge it (press any key to close).");
-			while(1)
+			if (getch())
 			{
-				if (getch())
-					{
-						endwin();
-						exit(1);
-					}
+				endwin();
+				exit(1);
 			}
 		}
+	}
 
 	p_win->height = grid_size * (p_win->box_height - 1) + 1;
 	p_win->width = grid_size * (p_win->box_width - 1) + 1;
@@ -127,7 +127,7 @@ void	init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 	p_win->border.br = '+';
 }
 
-void	make_pairs(void)
+void make_pairs(void)
 {
 	init_pair(1, COLOR_WHITE, COLOR_GREEN);
 	init_pair(2, COLOR_GREEN, COLOR_YELLOW);
