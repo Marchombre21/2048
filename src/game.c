@@ -1,15 +1,70 @@
 #include "main.h"
-#include <stdio.h>
+#include <stdlib.h>
 
-void print_board(int board[4][4])
+void add_nb(int board_size, int board[board_size][board_size])
 {
-	for (int i = 0; i < 4; i++)
+	int rand_nb;
+	int x;
+	int y;
+
+	while (true)
 	{
-		for (int j = 0; j < 4; j++)
-			printf("%d", board[j][i]);
-		printf("\n");
+		x = rand() % board_size;
+		y = rand() % board_size;
+		if (board[x][y] > 0)
+			continue;
+		rand_nb = rand() % 10;
+		if (!rand_nb)
+			board[x][y] = 4;
+		else
+			board[x][y] = 2;
+		break;
 	}
-	printf("\n");
+}
+
+void up(int board_size, int board[board_size][board_size])
+{
+	int temp[board_size];
+	int i;
+	int j;
+	int k;
+
+	for (k = 0; k < board_size; k++)
+		temp[k] = 0;
+	for (i = 0; i < board_size; i++)
+	{
+		k = 0;
+		for (j = 0; j < board_size; j++)
+		{
+			if (board[i][j] > 0)
+			{
+				temp[k] = board[i][j];
+				k++;
+			}
+		}
+		for (k = 0; k < board_size - 1; k++)
+		{
+			if (temp[k] == temp[k + 1])
+			{
+				temp[k] *= 2;
+				temp[k + 1] = 0;
+			}
+		}
+		for (j = 0; j < board_size; j++)
+			board[i][j] = 0;
+		j = 0;
+		for (k = 0; k < board_size; k++)
+		{
+			if (temp[k])
+			{
+				board[i][j] = temp[k];
+				j++;
+			}
+		}
+		for (k = 0; k < board_size; k++)
+			temp[k] = 0;
+	}
+	add_nb(board_size, board);
 }
 
 void down(int board_size, int board[board_size][board_size])
@@ -54,15 +109,95 @@ void down(int board_size, int board[board_size][board_size])
 		for (k = 0; k < board_size; k++)
 			temp[k] = 0;
 	}
+	add_nb(board_size, board);
 }
 
-int main(void)
+void left(int board_size, int board[board_size][board_size])
 {
-	int board[4][4] = {{4, 2, 0, 2}, {2, 0, 2, 2}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+	int temp[board_size];
+	int i;
+	int j;
+	int k;
 
-	print_board(board);
-	down(4, board);
-	print_board(board);
-	down(4, board);
-	print_board(board);
+	for (k = 0; k < board_size; k++)
+		temp[k] = 0;
+	for (j = 0; j < board_size; j++)
+	{
+		k = 0;
+		for (i = 0; i < board_size; i++)
+		{
+			if (board[i][j] > 0)
+			{
+				temp[k] = board[i][j];
+				k++;
+			}
+		}
+		for (k = 0; k < board_size - 1; k++)
+		{
+			if (temp[k] == temp[k + 1])
+			{
+				temp[k] *= 2;
+				temp[k + 1] = 0;
+			}
+		}
+		for (i = 0; i < board_size; i++)
+			board[i][j] = 0;
+		i = 0;
+		for (k = 0; k < board_size; k++)
+		{
+			if (temp[k])
+			{
+				board[i][j] = temp[k];
+				i++;
+			}
+		}
+		for (k = 0; k < board_size; k++)
+			temp[k] = 0;
+	}
+	add_nb(board_size, board);
+}
+
+void right(int board_size, int board[board_size][board_size])
+{
+	int temp[board_size];
+	int i;
+	int j;
+	int k;
+
+	for (k = 0; k < board_size; k++)
+		temp[k] = 0;
+	for (j = 0; j < board_size; j++)
+	{
+		k = board_size - 1;
+		for (i = board_size - 1; i >= 0; i--)
+		{
+			if (board[i][j] > 0)
+			{
+				temp[k] = board[i][j];
+				k--;
+			}
+		}
+		for (k = board_size - 1; k > 0; k--)
+		{
+			if (temp[k] == temp[k - 1])
+			{
+				temp[k] *= 2;
+				temp[k - 1] = 0;
+			}
+		}
+		for (i = 0; i < board_size; i++)
+			board[i][j] = 0;
+		i = board_size - 1;
+		for (k = board_size - 1; k >= 0; k--)
+		{
+			if (temp[k])
+			{
+				board[i][j] = temp[k];
+				i--;
+			}
+		}
+		for (k = 0; k < board_size; k++)
+			temp[k] = 0;
+	}
+	add_nb(board_size, board);
 }
