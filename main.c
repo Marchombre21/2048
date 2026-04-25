@@ -41,9 +41,10 @@ int main(void) {
 	init_win_params(&win, grid_size, max_x, max_y);
 	create_box(&win, grid_size, grid);
 
-	while((ch = getch()) != KEY_F(1))
+	while((ch = getch()) != 27)
 	{	switch(ch)
 		{	case KEY_LEFT:
+				// left(grid_size, )
 				break;
 			case KEY_RIGHT:
 				break;
@@ -62,13 +63,18 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 	p_win->box_height = max_y * 0.2;
 	p_win->box_width = max_x * 0.2;
 
-	if (p_win->box_height < 3 || p_win->box_width < 6)
+	if (p_win->box_height < 3 || p_win->box_width < 8)
 		{
-			printw("Your terminal isn't big enough. Please enlarge it");
-			endwin();
-			exit(1);
+			printw("Your terminal isn't big enough. Please enlarge it (press any key to close).");
+			while(1)
+			{
+				if (getch())
+					{
+						endwin();
+						exit(1);
+					}
+			}
 		}
-
 
 	p_win->height = grid_size * (p_win->box_height - 1) + 1;
 	p_win->width = grid_size * (p_win->box_width - 1) + 1;
@@ -84,15 +90,6 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 	p_win->border.tr = '+';
 	p_win->border.bl = '+';
 	p_win->border.br = '+';
-
-  p_win->border.ls = '|';
-  p_win->border.rs = '|';
-  p_win->border.ts = '-';
-  p_win->border.bs = '-';
-  p_win->border.tl = '+';
-  p_win->border.tr = '+';
-  p_win->border.bl = '+';
-  p_win->border.br = '+';
 }
 
 void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
