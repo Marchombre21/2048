@@ -14,17 +14,25 @@ int main(void)
 	keypad(stdscr, TRUE);
 	noecho();
 	printw("Chose if you want to play on a 4x4 grid or a 5x5 (press 4 or 5).");
-	while (grid_size != 52 && grid_size != 53)
+	while (grid_size != 4 && grid_size != 5)
 	{
-		grid_size = getch();
-		if (grid_size != 52 && grid_size != 53)
+		grid_size = getch() - 48;
+		if (grid_size != 4 && grid_size != 5)
 			printw("\nYou can't chose another number than 4 or 5. Please play the game.");
 	}
+
+	clear();
+	refresh();
+
 	int	grid[grid_size][grid_size];
-	for (int i; i < grid_size; i++)
+	for (int i = 0; i < grid_size; i++)
 	{
-		for (int j; j < grid_size; j++)
-			grid[i][j] = 0;
+		for (int j = 0; j < grid_size; j++)
+			if (i == 2 && j == 1)
+				grid[i][j] = 2;
+			else
+				grid[i][j] = 0;
+
 	}
 	
 	getmaxyx(stdscr, max_y, max_x);
@@ -32,7 +40,7 @@ int main(void)
 	
 	/* Initialize the window parameters */
 	init_win_params(&win, grid_size, max_x, max_y);
-	create_box(&win, grid_size);
+	create_box(&win, grid_size, grid);
 
 	while((ch = getch()) != KEY_F(1))
 	{	switch(ch)
@@ -46,16 +54,29 @@ int main(void)
 				break;	
 		}
 	}
-	endwin();			/* End curses mode		  */
+	endwin();
 	return 0;
 }
 void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 {
-	p_win->height = grid_size * 5;
-	p_win->width = grid_size * 10;
-	p_win->starty = (max_y - p_win->height)/2;
-	p_win->startx = (max_x - p_win->width)/2;
+	p_win->grid_size = grid_size;
+	p_win->box_height = max_y * 0.2;
+	p_win->box_width = max_x * 0.2;
 
+	if (p_win->box_height < 3 || p_win->box_width < 6)
+		{
+			printw("Your terminal isn't big enough. Please enlarge it");
+			endwin();
+			exit(1);
+		}
+
+
+	p_win->height = grid_size * (p_win->box_height - 1) + 1;
+	p_win->width = grid_size * (p_win->box_width - 1) + 1;
+	p_win->starty = (max_y - p_win->height) / 2;
+	p_win->startx = (max_x - p_win->width) / 2;
+
+	p_win->window = newwin(p_win->height, p_win->width, p_win->starty, p_win->startx);
 	p_win->border.ls = '|';
 	p_win->border.rs = '|';
 	p_win->border.ts = '-';
@@ -67,28 +88,31 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 
 }
 
-void create_box(WIN *p_win, int grid_size)
+void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 {
-	int x, y, w, h;
+	int w, h, pos_x, pos_y;
 
-	x = p_win->startx;
-	y = p_win->starty;
-	w = p_win->width;
-	h = p_win->height;
+	w = p_win->box_width;
+	h = p_win->box_height;
 
-	for (int i; i < grid_size; i++)
+	for (int i = 0; i < p_win->grid_size; i++)
 	{
-		mvaddch(y, x, p_win->border.tl);
-		mvaddch(y, x + w, p_win->border.tr);
-		mvaddch(y + h, x, p_win->border.bl);
-		mvaddch(y + h, x + w, p_win->border.br);
-		mvhline(y, x + 1, p_win->border.ts, w - 1);
-		mvhline(y + h, x + 1, p_win->border.bs, w - 1);
-		mvvline(y + 1, x, p_win->border.ls, h - 1);
-		mvvline(y + 1, x + w, p_win->border.rs, h - 1);
+		for (int j = 0; j < p_win->grid_size; j++)
+		{
+			pos_x = j * (w - 1);
+			pos_y = i * (h - 1);
+			mvwaddch(p_win->window, pos_y, pos_x, p_win->border.tl);
+			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
+			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
+			mvwaddch(p_win->window, pos_y + h - 1, pos_x + w - 1, p_win->border.br);
 
+			mvwhline(p_win->window, pos_y, pos_x + 1, p_win->border.ts, w - 2);
+			mvwhline(p_win->window, pos_y + h - 1, pos_x + 1, p_win->border.bs, w - 2);
+			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
+			mvwvline(p_win->window, pos_y + 1, pos_x + w - 1, p_win->border.rs, h - 2);
+			if (grid[i][j] != 0)
+				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
+		}
 	}
-
-	refresh();
-
+	wrefresh(p_win->window);
 }
