@@ -4,6 +4,10 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#ifndef SCORE_FILE
+#define SCORE_FILE "best_score.txt"
+#endif // !SCORE_FILE
+
 enum e_const
 {
 	WIN_VALUE = 2048
@@ -25,11 +29,14 @@ typedef struct _WIN_struct
 	WIN_BORDER border;
 } WIN;
 
-void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y);
-void create_box(WIN *win, int grid_size, int array[grid_size][grid_size]);
-int  game_state(int board_size, int board[board_size][board_size]);
-int  can_move_dir(int board_size, int board[board_size][board_size], char dir);
-int  is_loose(int board_size, int board[board_size][board_size]);
-int  is_win(int board_size, int board[board_size][board_size]);
+void  init_win_params(WIN *p_win, int grid_size, int max_x, int max_y);
+void  create_box(WIN *win, int grid_size, int array[grid_size][grid_size]);
+int   game_state(int board_size, int board[board_size][board_size]);
+int   can_move_dir(int board_size, int board[board_size][board_size], char dir);
+int   is_loose(int board_size, int board[board_size][board_size]);
+int   is_win(int board_size, int board[board_size][board_size]);
+char *ft_itoa(int n);
+int   ft_strlen(const char *s);
+int   ft_atoi(const char *nptr);
 
 #endif

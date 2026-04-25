@@ -4,15 +4,19 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 {
 	int i;
 	int j;
+	int zero_reached;
 
 	if (dir == 'T')
 	{
 		for (i = 0; i < board_size; i++)
 		{
+			zero_reached = 0;
 			for (j = 0; j < board_size; j++)
 			{
-				if (!board[i][j] || (j < board_size - 1 && board[i][j] == board[i][j + 1]))
+				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i][j + 1]))
 					return (1);
+				if (!zero_reached && !board[i][j])
+					zero_reached = 1;
 			}
 		}
 	}
@@ -20,10 +24,13 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 	{
 		for (i = 0; i < board_size; i++)
 		{
+			zero_reached = 0;
 			for (j = board_size - 1; j >= 0; j--)
 			{
-				if (!board[i][j] || (j < board_size - 1 && board[i][j] == board[i][j + 1]))
+				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i][j + 1]))
 					return (1);
+				if (!zero_reached && !board[i][j])
+					zero_reached = 1;
 			}
 		}
 	}
@@ -31,10 +38,13 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 	{
 		for (j = 0; j < board_size; j++)
 		{
+			zero_reached = 0;
 			for (i = 0; i < board_size; i++)
 			{
-				if (!board[i][j] || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
+				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
 					return (1);
+				if (!zero_reached && !board[i][j])
+					zero_reached = 1;
 			}
 		}
 	}
@@ -42,10 +52,13 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 	{
 		for (j = 0; j < board_size; j++)
 		{
+			zero_reached = 0;
 			for (i = board_size - 1; i >= 0; i--)
 			{
-				if (!board[i][j] || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
+				if ((zero_reached && board[i][j]) || (j < board_size - 1 && board[i][j] == board[i + 1][j]))
 					return (1);
+				if (!zero_reached && !board[i][j])
+					zero_reached = 1;
 			}
 		}
 	}
@@ -77,17 +90,4 @@ int is_win(int board_size, int board[board_size][board_size])
 		}
 	}
 	return (0);
-}
-
-int best_score(int board_size, int board[board_size][board_size])
-{
-	int best = 0;
-	int i;
-	int j;
-
-	for (i = 0; i < board_size; i++)
-		for (j = 0; j < board_size; j++)
-			if (board[i][j] > best)
-				best = board[i][j];
-	return (best);
 }
