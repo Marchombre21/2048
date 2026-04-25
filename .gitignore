@@ -1,0 +1,12 @@
+.build
+a.out
+2048
+in
+txt
+*.htr
+*.in
+callgrind.*
+.cache/
+compile_commands.json
+checker.py
+.obj
