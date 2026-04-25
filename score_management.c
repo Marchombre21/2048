@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int best_score(int board_size, int board[board_size][board_size])
+int game_best_score(int board_size, int board[board_size][board_size])
 {
 	int best = 0;
 	int i;
@@ -38,7 +38,7 @@ int save_score(int score)
 	return (0);
 }
 
-int get_best_score(void)
+int all_time_best_score(void)
 {
 	int  fd;
 	int  best_score;

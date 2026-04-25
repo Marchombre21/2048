@@ -42,7 +42,9 @@ void  down(int board_size, int board[board_size][board_size]);
 void  left(int board_size, int board[board_size][board_size]);
 void  right(int board_size, int board[board_size][board_size]);
 void  add_nb(int board_size, int board[board_size][board_size]);
-void	make_pairs(void);
-
+void  make_pairs(void);
+int   game_best_score(int board_size, int board[board_size][board_size]);
+int   save_score(int score);
+int   all_time_best_score(void);
 
 #endif

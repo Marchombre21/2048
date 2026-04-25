@@ -66,5 +66,7 @@ int main(void)
 		create_box(&win, grid_size, grid);
 	}
 	endwin();
+	if (game_best_score(grid_size, grid) > all_time_best_score())
+		save_score(game_best_score(grid_size, grid));
 	return 0;
 }
