@@ -10,3 +10,5 @@ callgrind.*
 compile_commands.json
 checker.py
 .obj
+.clangd
+.clang-format
