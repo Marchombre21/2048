@@ -7,6 +7,8 @@ void add_nb(int board_size, int board[board_size][board_size])
 	int x;
 	int y;
 
+	if (is_loose(board_size, board))
+		return;
 	while (true)
 	{
 		x = rand() % board_size;
