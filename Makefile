@@ -15,6 +15,13 @@ FINCLUDE := -I $(INCLUDE)
 DEPFLAGS := -MMD -MP
 
 SRC_FILES := main.c\
+	utils_display.c\
+	utils.c\
+	atoi.c\
+	game.c\
+	itoa.c\
+	score_management.c\
+	strlen.c\
 
 OBJ := $(patsubst %.c, $(BUILD_DIR)/%.o, $(SRC_FILES))
 DEPS := $(patsubst %.o, %.d, $(OBJ))

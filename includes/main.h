@@ -42,5 +42,7 @@ void  down(int board_size, int board[board_size][board_size]);
 void  left(int board_size, int board[board_size][board_size]);
 void  right(int board_size, int board[board_size][board_size]);
 void  add_nb(int board_size, int board[board_size][board_size]);
+void	make_pairs(void);
+
 
 #endif
