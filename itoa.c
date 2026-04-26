@@ -30,9 +30,9 @@ char *ft_itoa(int n)
 	char        *str;
 	size_t       size;
 
-	nbr = n;
+	nbr = (unsigned int) n;
 	if (n < 0)
-		nbr = n * -1;
+		nbr = (unsigned int) (n * -1);
 	size = count_digits(n);
 	str = malloc(sizeof(char) * (size + 1));
 	if (!str)

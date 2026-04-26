@@ -4,7 +4,7 @@
 
 extern volatile sig_atomic_t g_signal;
 
-int get_pair_color(int number)
+static int get_pair_color(int number)
 {
 	int i;
 	for (i = 1; i < 25; i++)
@@ -111,8 +111,8 @@ void draw_ascii_number(WINDOW *win, int pos_y, int pos_x, int box_h, int box_w, 
 void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 {
 	p_win->board_size = board_size;
-	p_win->box_height = max_y * 0.2;
-	p_win->box_width = max_x * 0.2;
+	p_win->box_height = max_y / 5;
+	p_win->box_width = max_x / 5;
 
 	while (p_win->box_height < 5 || p_win->box_width < 29)
 	{
@@ -122,8 +122,8 @@ void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 
 		wgetch(stdscr);
 		getmaxyx(stdscr, max_y, max_x);
-		p_win->box_height = max_y * 0.2;
-		p_win->box_width = max_x * 0.2;
+		p_win->box_height = max_y / 5;
+		p_win->box_width = max_x / 5;
 	}
 
 	p_win->height = board_size * (p_win->box_height - 1) + 1;
@@ -200,9 +200,9 @@ int get_board_size(WINDOW *menu, int menu_y, int menu_x)
 		for (int i = 0; i < 10 && bests[i] > 0; i++)
 		{
 			if (i % 2)
-				mvwprintw(menu, start_y + 12 + i, menu_x * 0.7, "%d: %d", i + 1, bests[i]);
+				mvwprintw(menu, start_y + 12 + i, (menu_x / 10) * 7, "%d: %d", i + 1, bests[i]);
 			else
-				mvwprintw(menu, start_y + 13 + i, menu_x * 0.2, "%d: %d", i + 1, bests[i]);
+				mvwprintw(menu, start_y + 13 + i, menu_x / 5, "%d: %d", i + 1, bests[i]);
 		}
 	}
 
@@ -226,13 +226,13 @@ int get_board_size(WINDOW *menu, int menu_y, int menu_x)
 
 int lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 {
-	char answer = 0;
+	int answer = 0;
 
 	wattron(menu, COLOR_PAIR(11));
 	mvwprintw(menu, menu_y / 3, menu_x / 2 - 13, "%s: %d", "You lose! Your score is", score);
 	wattroff(menu, COLOR_PAIR(11));
 	mvwprintw(menu, menu_y / 2, menu_x / 2 - 10, "%s", "Do you want restart?");
-	mvwprintw(menu, menu_y * 0.75, menu_x / 2 - 7, "%s", "(press Y or N)");
+	mvwprintw(menu, (menu_y / 4) * 3, menu_x / 2 - 7, "%s", "(press Y or N)");
 	wrefresh(menu);
 
 	wtimeout(menu, 100);
@@ -253,15 +253,15 @@ int lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 
 int win_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 {
-	char answer = 0;
+	int answer = 0;
 
 	wattron(menu, COLOR_PAIR(8));
-	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 13, "You win! Your score is %d!", score);
+	mvwprintw(menu, (menu_y / 20) * 3, menu_x / 2 - 13, "You win! Your score is %d!", score);
 	wattroff(menu, COLOR_PAIR(8));
-	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 25, "%s", "Do you want Restart, Continue this game or Stop it?");
-	mvwprintw(menu, menu_y * 0.55, menu_x / 2 - 17, "%s", "(If you continue it will never end.");
-	mvwprintw(menu, menu_y * 0.6, menu_x / 2 - 23, "%s", "You will have to press ESC to finish your game.)");
-	mvwprintw(menu, menu_y * 0.8, menu_x / 2 - 8, "%s", "(press R, C or S)");
+	mvwprintw(menu, (menu_y / 20) * 7, menu_x / 2 - 25, "%s", "Do you want Restart, Continue this game or Stop it?");
+	mvwprintw(menu, (menu_y / 20) * 11, menu_x / 2 - 17, "%s", "(If you continue it will never end.");
+	mvwprintw(menu, (menu_y / 20) * 12, menu_x / 2 - 23, "%s", "You will have to press ESC to finish your game.)");
+	mvwprintw(menu, (menu_y / 20) * 16, menu_x / 2 - 8, "%s", "(press R, C or S)");
 	wrefresh(menu);
 
 	wtimeout(menu, 100);

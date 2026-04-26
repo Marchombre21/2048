@@ -13,7 +13,7 @@ void add_nb(int board_size, int board[board_size][board_size])
 		for (y = 0; y < board_size; y++)
 			if (board[x][y] == 0)
 				empty_cell++;
-	srand(time(NULL));
+	srand((unsigned int) time(NULL));
 	rand_nb = rand() % 10;
 	if (!rand_nb)
 		rand_nb = 4;

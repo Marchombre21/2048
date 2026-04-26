@@ -1,5 +1,6 @@
 #include "main.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 static void *ft_calloc(size_t nmemb, size_t size)
@@ -17,8 +18,8 @@ static void *ft_calloc(size_t nmemb, size_t size)
 
 static size_t strs_size(const char *s, unsigned char c)
 {
-	int i;
-	int j;
+	size_t i;
+	size_t j;
 
 	i = 0;
 	j = 0;

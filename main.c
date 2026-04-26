@@ -28,7 +28,7 @@ int main(void)
 		already_won = 0;
 		getmaxyx(stdscr, max_y, max_x);
 
-		menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
+		menu = create_newwin(max_y / 2, max_x / 2, max_y / 4, max_x / 4);
 		getmaxyx(menu, menu_y, menu_x);
 		board_size = get_board_size(menu, menu_y, menu_x);
 
@@ -85,7 +85,7 @@ int main(void)
 			if (is_loose(board_size, board))
 			{
 				score = game_best_score(board_size, board);
-				menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
+				menu = create_newwin(max_y / 2, max_x / 2, max_y / 4, max_x / 4);
 				getmaxyx(menu, menu_y, menu_x);
 				int answer = lose_menu(menu, menu_y, menu_x, score);
 				if (answer == 110 || answer == 27)
@@ -94,7 +94,7 @@ int main(void)
 			}
 			if ((!already_won && is_win(board_size, board)) || is_absolute_win(board_size, board))
 			{
-				menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
+				menu = create_newwin(max_y / 2, max_x / 2, max_y / 4, max_x / 4);
 				getmaxyx(menu, menu_y, menu_x);
 				int answer = win_menu(menu, menu_y, menu_x, game_best_score(board_size, board));
 				// Stop
