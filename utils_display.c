@@ -57,7 +57,8 @@ void create_box(WIN *p_win, int board_size, int board[board_size][board_size])
 				for (int bg_pos_y = pos_y + 1; bg_pos_y < pos_y + h - 1; bg_pos_y++)
 					for (int bg_pos_x = pos_x + 1; bg_pos_x < pos_x + w - 1; bg_pos_x++)
 						mvwaddch(p_win->window, bg_pos_y, bg_pos_x, ' ');
-				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", board[i][j]);
+				draw_ascii_number(p_win->window, pos_y + 1, pos_x + 1, h - 2, w - 2, board[i][j]);
+				// mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", board[i][j]);
 				wattroff(p_win->window, COLOR_PAIR(pair_color));
 			}
 
@@ -67,33 +68,45 @@ void create_box(WIN *p_win, int board_size, int board[board_size][board_size])
 	wrefresh(p_win->window);
 }
 
-// void draw_ascii_number(WINDOW *win, int start_y, int start_x, int number)
-// {
-// 	int divisor = 1;
-// 	int temp = number;
-// 	int espacement_x = 4;
-// 	int i = 0;
-// 	int digit;
+void draw_ascii_number(WINDOW *win, int pos_y, int pos_x, int box_h, int box_w, int number)
+{
+	int digits[16];
+	int len;
+	int tmp;
+	int start_y;
+	int start_x;
+	int row;
+	int i;
+	int digit;
 
-// 	while (temp >= 10)
-// 	{
-// 		divisor *= 10;
-// 		temp /= 10;
-// 	}
+	if (number == 0)
+		return;
 
-// 	while (divisor > 0)
-// 	{
-// 		digit = (number / divisor) % 10;
+	len = 0;
+	tmp = number;
+	while (tmp > 0)
+	{
+		digits[len] = tmp % 10;
+		tmp /= 10;
+		len++;
+	}
 
-// 		for (int ligne = 0; ligne < 3; ligne++)
-// 		{
-// 			mvwprintw(win, start_y + ligne, start_x + (i * espacement_x), "%s", ascii_art[digit][ligne]);
-// 		}
+	start_y = pos_y + (box_h - 3) / 2;
+	start_x = pos_x + (box_w - (len * 3)) / 2;
 
-// 		divisor /= 10;
-// 		i++;
-// 	}
-// }
+	row = 0;
+	while (row < 3)
+	{
+		i = len - 1;
+		while (i >= 0)
+		{
+			digit = digits[i];
+			mvwprintw(win, start_y + row, start_x + (len - 1 - i) * 3, "%s", ascii_art[digit][row]);
+			i--;
+		}
+		row++;
+	}
+}
 
 void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 {
@@ -101,7 +114,7 @@ void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 	p_win->box_height = max_y * 0.2;
 	p_win->box_width = max_x * 0.2;
 
-	while (p_win->box_height < 3 || p_win->box_width < 8)
+	while (p_win->box_height < 5 || p_win->box_width < 29)
 	{
 		clear();
 		mvprintw(0, 0, "Your terminal isn't big enough. Please enlarge it.");

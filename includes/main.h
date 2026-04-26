@@ -59,5 +59,6 @@ void    ft_bzero(void *s, size_t n);
 char  **ft_split(char const *s, char c);
 char   *ft_substr(char const *s, unsigned int start, size_t len);
 int     is_absolute_win(int board_size, int board[board_size][board_size]);
+void draw_ascii_number(WINDOW *win, int pos_y, int pos_x, int box_h, int box_w, int number);
 
 #endif

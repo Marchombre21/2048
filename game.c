@@ -31,7 +31,6 @@ void add_nb(int board_size, int board[board_size][board_size])
 			}
 			if (board[x][y] == 0)
 				empty_cell--;
-
 		}
 	}
 }
