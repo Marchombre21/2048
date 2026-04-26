@@ -82,6 +82,8 @@ int main(void)
 				create_box(&win, board_size, board);
 				break;
 			}
+			clean_win(win.window);
+			create_box(&win, board_size, board);
 			if (is_loose(board_size, board))
 			{
 				score = game_best_score(board_size, board);
@@ -110,8 +112,6 @@ int main(void)
 				if (answer == 99)
 					already_won = 1;
 			}
-			clean_win(win.window);
-			create_box(&win, board_size, board);
 		}
 		if (ch == 27)
 			game_on = 0;
