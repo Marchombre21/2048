@@ -167,22 +167,29 @@ int get_board_size(WINDOW *menu, int menu_y, int menu_x)
 	int board_size = 0;
 	int bests[10] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-	mvwprintw(menu, menu_y * 0.05, menu_x / 2 - 16, "%s", " ____     ___    _  _      ___  ");
-	mvwprintw(menu, menu_y * 0.08, menu_x / 2 - 16, "%s", "|___ \\   / _ \\  | || |    ( _ ) ");
-	mvwprintw(menu, menu_y * 0.11, menu_x / 2 - 16, "%s", "  __) | | | | | | || |_   / _ \\ ");
-	mvwprintw(menu, menu_y * 0.14, menu_x / 2 - 16, "%s", " / __/  | |_| | |__   _| | (_) |");
-	mvwprintw(menu, menu_y * 0.17, menu_x / 2 - 16, "%s", "|_____|  \\___/     |_|    \\___/ ");
-	mvwprintw(menu, menu_y * 0.25, menu_x / 2 - 20, "%s", "What board size do you want? 4x4 or 5x5?");
-	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 7, "%s", "(press 4 or 5)");
+	int start_y = menu_y / 17;
+	int start_x = menu_x / 2;
+
+	mvwprintw(menu, start_y + 0, start_x - 16, " ____     ___    _  _      ___  ");
+	mvwprintw(menu, start_y + 1, start_x - 16, "|___ \\   / _ \\  | || |    ( _ ) ");
+	mvwprintw(menu, start_y + 2, start_x - 16, "  __) | | | | | | || |_   / _ \\ ");
+	mvwprintw(menu, start_y + 3, start_x - 16, " / __/  | |_| | |__   _| | (_) |");
+	mvwprintw(menu, start_y + 4, start_x - 16, "|_____|  \\___/     |_|    \\___/ ");
+
+	mvwprintw(menu, start_y + 7, start_x - 20, "%s", "What board size do you want? 4x4 or 5x5?");
+	mvwprintw(menu, start_y + 8, start_x - 7, "%s", "(press 4 or 5)");
 	if (get_10_best_score(bests) < 0)
-		mvwprintw(menu, menu_y * 0.45, menu_x / 2 - 19, "%s", "Error during parsing of best score file");
-	mvwprintw(menu, menu_y * 0.45, menu_x / 2 - 6, "%s", "Best scores :");
-	for (int i = 0; i < 10 && bests[i] > 0; i++)
+		mvwprintw(menu, start_y + 11, start_x - 19, "%s", "Error during parsing of best score file");
+	else
 	{
-		if (i % 2)
-			mvwprintw(menu, menu_y * (0.46 + (0.04 * (i + 1))), menu_x * 0.7, "%d: %d", i + 1, bests[i]);
-		else
-			mvwprintw(menu, menu_y * (0.5 + (0.04 * (i + 1))), menu_x * 0.2, "%d: %d", i + 1, bests[i]);
+		mvwprintw(menu, start_y + 11, start_x - 6, "%s", "Best scores :");
+		for (int i = 0; i < 10 && bests[i] > 0; i++)
+		{
+			if (i % 2)
+				mvwprintw(menu, start_y + 12 + i, menu_x * 0.7, "%d: %d", i + 1, bests[i]);
+			else
+				mvwprintw(menu, start_y + 13 + i, menu_x * 0.2, "%d: %d", i + 1, bests[i]);
+		}
 	}
 
 	wrefresh(menu);
