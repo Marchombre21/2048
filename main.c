@@ -18,7 +18,6 @@ int main(void)
 	int ch, max_y, max_x, board_size, menu_x, menu_y, game_on, score, already_won;
 	
 	game_on = 1;
-	already_won = 0;
 	board_size = 0;
 	initscr();
 	start_color();
@@ -26,6 +25,7 @@ int main(void)
 	noecho();
 	while (game_on && !g_signal)
 	{
+		already_won = 0;
 		getmaxyx(stdscr, max_y, max_x);
 		
 		menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
@@ -105,11 +105,7 @@ int main(void)
 				}
 				//Restart
 				if (answer == 114)
-				{
-					if (already_won)
-						already_won = 0;
 					break;
-				}
 				//Continue
 				if (answer == 99)
 					already_won = 1;
