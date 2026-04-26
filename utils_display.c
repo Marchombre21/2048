@@ -6,28 +6,13 @@ extern volatile sig_atomic_t g_signal;
 
 int get_pair_color(int number)
 {
-	if (number == 2)
-		return (1);
-	if (number == 4)
-		return (2);
-	if (number == 8)
-		return (3);
-	if (number == 16)
-		return (4);
-	if (number == 32)
-		return (5);
-	if (number == 64)
-		return (6);
-	if (number == 128)
-		return (7);
-	if (number == 256)
-		return (8);
-	if (number == 512)
-		return (9);
-	if (number == 1024)
-		return (10);
-	else
-		return (11);
+	int i;
+	for (i = 1; i < 25; i++)
+	{
+		if ((number >> i) & 1)
+			return (i);
+	}
+	return (i);
 }
 
 void clean_win(WINDOW *local_win)
@@ -147,17 +132,35 @@ void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 
 void make_pairs(void)
 {
-	init_pair(1, COLOR_GREEN, COLOR_WHITE);
-	init_pair(2, COLOR_WHITE, COLOR_YELLOW);
-	init_pair(3, COLOR_YELLOW, COLOR_CYAN);
-	init_pair(4, COLOR_CYAN, COLOR_MAGENTA);
-	init_pair(5, COLOR_MAGENTA, COLOR_RED);
-	init_pair(6, COLOR_RED, COLOR_GREEN);
-	init_pair(7, COLOR_BLUE, COLOR_GREEN);
-	init_pair(8, COLOR_GREEN, COLOR_BLUE);
-	init_pair(9, COLOR_MAGENTA, COLOR_GREEN);
-	init_pair(10, COLOR_BLACK, COLOR_RED);
-	init_pair(11, COLOR_RED, COLOR_BLACK);
+	init_pair(1, COLOR_BLACK, COLOR_WHITE);   // 2
+	init_pair(2, COLOR_BLACK, COLOR_CYAN);    // 4
+	init_pair(3, COLOR_BLACK, COLOR_GREEN);   // 8
+	init_pair(4, COLOR_BLACK, COLOR_YELLOW);  // 16
+	init_pair(5, COLOR_BLACK, COLOR_MAGENTA); // 32
+	init_pair(6, COLOR_BLACK, COLOR_RED);     // 64
+
+	init_pair(7, COLOR_WHITE, COLOR_BLUE);     // 128
+	init_pair(8, COLOR_WHITE, COLOR_CYAN);     // 256
+	init_pair(9, COLOR_WHITE, COLOR_GREEN);    // 512
+	init_pair(10, COLOR_WHITE, COLOR_YELLOW);  // 1024
+	init_pair(11, COLOR_WHITE, COLOR_MAGENTA); // 2048
+	init_pair(12, COLOR_WHITE, COLOR_RED);     // 4096
+
+	init_pair(13, COLOR_YELLOW, COLOR_BLUE);    // 8192
+	init_pair(14, COLOR_YELLOW, COLOR_CYAN);    // 16384
+	init_pair(15, COLOR_YELLOW, COLOR_GREEN);   // 32768
+	init_pair(16, COLOR_YELLOW, COLOR_MAGENTA); // 65536
+	init_pair(17, COLOR_YELLOW, COLOR_RED);     // 131072
+
+	init_pair(18, COLOR_CYAN, COLOR_BLUE);    // 262144
+	init_pair(19, COLOR_CYAN, COLOR_GREEN);   // 524288
+	init_pair(20, COLOR_CYAN, COLOR_MAGENTA); // 1048576
+	init_pair(21, COLOR_CYAN, COLOR_RED);     // 2097152
+
+	init_pair(22, COLOR_BLACK, COLOR_BLUE);  // 4194304
+	init_pair(23, COLOR_RED, COLOR_WHITE);   // 8388608
+	init_pair(24, COLOR_BLUE, COLOR_WHITE);  // 16777216
+	init_pair(25, COLOR_WHITE, COLOR_BLACK); // 33554432
 }
 
 int get_board_size(WINDOW *menu, int menu_y, int menu_x)

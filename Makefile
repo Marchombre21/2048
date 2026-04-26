@@ -14,6 +14,12 @@ FINCLUDE := -I $(INCLUDE)
 
 DEPFLAGS := -MMD -MP
 
+CLANG_FLAGS = -Wall -Wextra -Werror -Wpedantic \
+  -Wshadow -Wconversion -Wsign-conversion -Wcast-qual -Wstrict-prototypes \
+  -Wmissing-prototypes -Wpointer-arith -Wundef -Wwrite-strings \
+  -Winit-self -Wswitch-enum -Wformat=2 -Wunreachable-code \
+  -g3 -O0 -fno-omit-frame-pointer \
+
 SRC_FILES := main.c\
 	utils_display.c\
 	utils.c\
@@ -48,6 +54,10 @@ fclean: clean
 	@$(RM) $(NAME)
 
 re: fclean all
+
+lint:
+			clang $(CLANG_FLAGS) $(SRC_FILES) -Iincludes
+
 
 .PHONY: all clean fclean re
 
