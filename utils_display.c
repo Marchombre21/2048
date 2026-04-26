@@ -1,6 +1,9 @@
 #include "ascii.h"
 #include "main.h"
 
+extern volatile sig_atomic_t g_signal;
+
+
 int get_pair_color(int number)
 {
 	if (number == 2)
@@ -40,16 +43,16 @@ void destroy_win(WINDOW *local_win)
 	delwin(local_win);
 }
 
-void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
+void create_box(WIN *p_win, int board_size, int board[board_size][board_size])
 {
 	int w, h, pos_x, pos_y, pair_color;
 
 	w = p_win->box_width;
 	h = p_win->box_height;
 
-	for (int i = 0; i < p_win->grid_size; i++)
+	for (int i = 0; i < p_win->board_size; i++)
 	{
-		for (int j = 0; j < p_win->grid_size; j++)
+		for (int j = 0; j < p_win->board_size; j++)
 		{
 			pos_x = i * (w - 1);
 			pos_y = j * (h - 1);
@@ -62,18 +65,18 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 			mvwhline(p_win->window, pos_y + h - 1, pos_x + 1, p_win->border.bs, w - 2);
 			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
 			mvwvline(p_win->window, pos_y + 1, pos_x + w - 1, p_win->border.rs, h - 2);
-			if (grid[i][j] != 0)
+			if (board[i][j] != 0)
 			{
-				pair_color = get_pair_color(grid[i][j]);
+				pair_color = get_pair_color(board[i][j]);
 				wattron(p_win->window, COLOR_PAIR(pair_color));
 				for (int bg_pos_y = pos_y + 1; bg_pos_y < pos_y + h - 1; bg_pos_y++)
 					for (int bg_pos_x = pos_x + 1; bg_pos_x < pos_x + w - 1; bg_pos_x++)
 						mvwaddch(p_win->window, bg_pos_y, bg_pos_x, ' ');
-				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", grid[i][j]);
+				mvwprintw(p_win->window, pos_y + h / 2, pos_x + w / 2, "%d", board[i][j]);
 				wattroff(p_win->window, COLOR_PAIR(pair_color));
 			}
 
-			// draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, grid[i][j]);
+			// draw_ascii_number(p_win->window, pos_y + h / 2, pos_x + w / 2, board[i][j]);
 		}
 	}
 	wrefresh(p_win->window);
@@ -107,9 +110,9 @@ void create_box(WIN *p_win, int grid_size, int grid[grid_size][grid_size])
 // 	}
 // }
 
-void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
+void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 {
-	p_win->grid_size = grid_size;
+	p_win->board_size = board_size;
 	p_win->box_height = max_y * 0.2;
 	p_win->box_width = max_x * 0.2;
 
@@ -127,12 +130,13 @@ void init_win_params(WIN *p_win, int grid_size, int max_x, int max_y)
 		}
 	}
 
-	p_win->height = grid_size * (p_win->box_height - 1) + 1;
-	p_win->width = grid_size * (p_win->box_width - 1) + 1;
+	p_win->height = board_size * (p_win->box_height - 1) + 1;
+	p_win->width = board_size * (p_win->box_width - 1) + 1;
 	p_win->starty = (max_y - p_win->height) / 2;
 	p_win->startx = (max_x - p_win->width) / 2;
 
 	p_win->window = newwin(p_win->height, p_win->width, p_win->starty, p_win->startx);
+	keypad(p_win->window, TRUE);
 	p_win->border.ls = '|';
 	p_win->border.rs = '|';
 	p_win->border.ts = '-';
@@ -158,52 +162,81 @@ void make_pairs(void)
 	init_pair(11, COLOR_RED, COLOR_BLACK);
 }
 
-int	get_grid_size(WINDOW *menu, int max_y, int max_x)
+int	get_board_size(WINDOW *menu, int menu_y, int menu_x)
 {
-	int grid_size = 0;
+	int board_size = 0;
 
-	mvwprintw(menu, max_y / 3, max_x / 2 - 2, "%s", "2048");
-	mvwprintw(menu, max_y / 2, max_x / 2 - 20, "%s", "What grid size do you want? 4x4 or 5x5?");
-	mvwprintw(menu, max_y * 0.75, max_x / 2 - 7, "%s", "(press 4 or 5)");
+	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 2, "%s", "2048");
+	mvwprintw(menu, menu_y * 0.25, menu_x / 2 - 20, "%s", "What board size do you want? 4x4 or 5x5?");
+	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 7, "%s", "(press 4 or 5)");
 	wrefresh(menu);
-	while (1)
+
+	wtimeout(menu, 100);
+	while (!g_signal)
 	{
-		grid_size = wgetch(menu) - 48;
-		if (grid_size == 4 || grid_size == 5)
+		board_size = wgetch(menu);
+		if (board_size == ERR)
+			continue;
+		if (board_size == 52 || board_size == 53)
 			break;
 	}
 
 	werase(menu);
 	wrefresh(menu);
 	delwin(menu);
-	clear();
-	refresh();
-	return (grid_size);
+	return (board_size - 48);
 }
 
-char	lose_menu(WINDOW *menu, int max_y, int max_x)
+int	lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 {
 	char answer = 0;
 
-	mvwprintw(menu, max_y / 3, max_x / 2 - 2, "%s", "You lose!");
-	mvwprintw(menu, max_y / 2, max_x / 2 - 20, "%s", "Do you want restart?");
-	mvwprintw(menu, max_y * 0.75, max_x / 2 - 7, "%s", "(press Y or N)");
+	wattron(menu, COLOR_PAIR(11));
+	mvwprintw(menu, menu_y / 3, menu_x / 2 - 13, "%s: %d", "You lose! Your score is", score);
+	wattroff(menu, COLOR_PAIR(11));
+	mvwprintw(menu, menu_y / 2, menu_x / 2 - 10, "%s", "Do you want restart?");
+	mvwprintw(menu, menu_y * 0.75, menu_x / 2 - 7, "%s", "(press Y or N)");
+	wrefresh(menu);
+
+	wtimeout(menu, 100);
+	while (!g_signal)
+	{
+		answer = wgetch(menu);
+		if (answer == ERR)
+			continue;
+		if (answer == 121 || answer == 110)
+			break;
+	}
+
+	werase(menu);
+	wrefresh(menu);
+	delwin(menu);
+	return (answer);
+}
+
+int	win_menu(WINDOW *menu, int menu_y, int menu_x)
+{
+	char answer = 0;
+
+	wattron(menu, COLOR_PAIR(8));
+	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 13, "%s", "You win! Your score is 2048!");
+	wattroff(menu, COLOR_PAIR(8));
+	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 25, "%s", "Do you want Restart, Continue this game or Stop it?");
+	mvwprintw(menu, menu_y * 0.55, menu_x / 2 - 17, "%s", "(If you continue it will never end.");
+	mvwprintw(menu, menu_y * 0.6, menu_x / 2 - 23, "%s", "You will have to press ESC to finish your game.)");
+	mvwprintw(menu, menu_y * 0.8, menu_x / 2 - 8, "%s", "(press R, C or S)");
 	wrefresh(menu);
 	while (1)
 	{
 		answer = wgetch(menu);
-		#include <stdio.h>
-		printf()
-		if (answer == 4 || answer == 5)
+		if (answer == 114 || answer == 99 || answer == 115)
 			break;
 	}
 
 	werase(menu);
 	wrefresh(menu);
 	delwin(menu);
-	clear();
-	refresh();
-	return (grid_size);
+	return (answer);
 }
 
 WINDOW *create_newwin(int height, int width, int starty, int startx)

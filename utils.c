@@ -69,6 +69,7 @@ int can_move_dir(int board_size, int board[board_size][board_size], char dir)
 
 int is_loose(int board_size, int board[board_size][board_size])
 {
+
 	if (!can_move_dir(board_size, board, 'T') && !can_move_dir(board_size, board, 'B') && !can_move_dir(board_size, board, 'L') && !can_move_dir(board_size, board, 'R'))
 	{
 		return (1);
@@ -85,10 +86,9 @@ int is_win(int board_size, int board[board_size][board_size])
 	{
 		for (j = 0; j < board_size; j++)
 		{
-			if (board[i][j] >= WIN_VALUE)
+			if (board[i][j] == WIN_VALUE) 
 				return (1);
 		}
 	}
 	return (0);
 }
-
