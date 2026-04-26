@@ -92,11 +92,11 @@ int main(void)
 					game_on = 0;
 				break;
 			}
-			if (!already_won && is_win(board_size, board))
+			if ((!already_won && is_win(board_size, board)) || is_absolute_win(board_size, board))
 			{
 				menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
 				getmaxyx(menu, menu_y, menu_x);
-				int answer = win_menu(menu, menu_y, menu_x);
+				int answer = win_menu(menu, menu_y, menu_x, game_best_score(board_size, board));
 				// Stop
 				if (answer == 115 || answer == 27)
 				{

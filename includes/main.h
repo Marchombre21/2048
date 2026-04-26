@@ -52,11 +52,12 @@ void  clean_win(WINDOW *local_win);
 WINDOW *create_newwin(int height, int width, int starty, int startx);
 int     get_board_size(WINDOW *menu, int max_y, int max_x);
 int     lose_menu(WINDOW *menu, int max_y, int max_x, int score);
-int     win_menu(WINDOW *menu, int menu_y, int menu_x);
+int     win_menu(WINDOW *menu, int menu_y, int menu_x, int score);
 void    sighandler(int signum);
 void    destroy_win(WINDOW *local_win);
 void    ft_bzero(void *s, size_t n);
 char  **ft_split(char const *s, char c);
 char   *ft_substr(char const *s, unsigned int start, size_t len);
+int     is_absolute_win(int board_size, int board[board_size][board_size]);
 
 #endif

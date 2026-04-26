@@ -235,12 +235,12 @@ int lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 	return (answer);
 }
 
-int win_menu(WINDOW *menu, int menu_y, int menu_x)
+int win_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 {
 	char answer = 0;
 
 	wattron(menu, COLOR_PAIR(8));
-	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 13, "%s", "You win! Your score is 2048!");
+	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 13, "You win! Your score is %d!", score);
 	wattroff(menu, COLOR_PAIR(8));
 	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 25, "%s", "Do you want Restart, Continue this game or Stop it?");
 	mvwprintw(menu, menu_y * 0.55, menu_x / 2 - 17, "%s", "(If you continue it will never end.");
