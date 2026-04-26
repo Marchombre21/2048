@@ -1,7 +1,6 @@
 #include <ncurses.h>
-#include <stdlib.h>
 #include <signal.h>
-
+#include <stdlib.h>
 
 #ifndef MAIN_H
 #define MAIN_H
@@ -47,13 +46,17 @@ void  add_nb(int board_size, int board[board_size][board_size]);
 void  make_pairs(void);
 int   game_best_score(int board_size, int board[board_size][board_size]);
 int   save_score(int score);
-int   all_time_best_score(void);
-void clean_win(WINDOW *local_win);
+int   score_file_format(void);
+int   get_10_best_score(int tab[10]);
+void  clean_win(WINDOW *local_win);
 WINDOW *create_newwin(int height, int width, int starty, int startx);
-int	get_board_size(WINDOW *menu, int max_y, int max_x);
-int	lose_menu(WINDOW *menu, int max_y, int max_x, int score);
-int	win_menu(WINDOW *menu, int menu_y, int menu_x);
-void sighandler(int signum);
-void destroy_win(WINDOW *local_win);
+int     get_board_size(WINDOW *menu, int max_y, int max_x);
+int     lose_menu(WINDOW *menu, int max_y, int max_x, int score);
+int     win_menu(WINDOW *menu, int menu_y, int menu_x);
+void    sighandler(int signum);
+void    destroy_win(WINDOW *local_win);
+void    ft_bzero(void *s, size_t n);
+char  **ft_split(char const *s, char c);
+char   *ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif

@@ -13,10 +13,10 @@ int main(void)
 	signal(SIGINT, sighandler);
 	signal(SIGQUIT, sighandler);
 
-	WIN win;
+	WIN     win;
 	WINDOW *menu;
 	int ch, max_y, max_x, board_size, menu_x, menu_y, game_on, score, already_won;
-	
+
 	game_on = 1;
 	board_size = 0;
 	initscr();
@@ -27,7 +27,7 @@ int main(void)
 	{
 		already_won = 0;
 		getmaxyx(stdscr, max_y, max_x);
-		
+
 		menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
 		getmaxyx(menu, menu_y, menu_x);
 		board_size = get_board_size(menu, menu_y, menu_x);
@@ -38,14 +38,14 @@ int main(void)
 		for (int i = 0; i < board_size; i++)
 			for (int j = 0; j < board_size; j++)
 				board[i][j] = 0;
-	
+
 		add_nb(board_size, board);
 		add_nb(board_size, board);
 
 		init_win_params(&win, board_size, max_x, max_y);
 		make_pairs();
 		create_box(&win, board_size, board);
-	
+
 		wtimeout(win.window, 100);
 		while (!g_signal && (ch = wgetch(win.window)) != 27)
 		{
@@ -97,16 +97,16 @@ int main(void)
 				menu = create_newwin(max_y * 0.5, max_x * 0.5, max_y * 0.25, max_x * 0.25);
 				getmaxyx(menu, menu_y, menu_x);
 				int answer = win_menu(menu, menu_y, menu_x);
-				//Stop
+				// Stop
 				if (answer == 115 || answer == 27)
 				{
 					game_on = 0;
 					break;
 				}
-				//Restart
+				// Restart
 				if (answer == 114)
 					break;
-				//Continue
+				// Continue
 				if (answer == 99)
 					already_won = 1;
 			}
@@ -116,8 +116,7 @@ int main(void)
 		if (ch == 27)
 			game_on = 0;
 		destroy_win(win.window);
-		if (game_best_score(board_size, board) > all_time_best_score())
-			save_score(game_best_score(board_size, board));
+		save_score(game_best_score(board_size, board));
 	}
 	endwin();
 	return 0;

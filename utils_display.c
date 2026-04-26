@@ -1,8 +1,8 @@
 #include "ascii.h"
 #include "main.h"
+#include <ncurses.h>
 
 extern volatile sig_atomic_t g_signal;
-
 
 int get_pair_color(int number)
 {
@@ -60,7 +60,7 @@ void create_box(WIN *p_win, int board_size, int board[board_size][board_size])
 			mvwaddch(p_win->window, pos_y, pos_x + w - 1, p_win->border.tr);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x, p_win->border.bl);
 			mvwaddch(p_win->window, pos_y + h - 1, pos_x + w - 1, p_win->border.br);
-			
+
 			mvwhline(p_win->window, pos_y, pos_x + 1, p_win->border.ts, w - 2);
 			mvwhline(p_win->window, pos_y + h - 1, pos_x + 1, p_win->border.bs, w - 2);
 			mvwvline(p_win->window, pos_y + 1, pos_x, p_win->border.ls, h - 2);
@@ -160,13 +160,36 @@ void make_pairs(void)
 	init_pair(11, COLOR_RED, COLOR_BLACK);
 }
 
-int	get_board_size(WINDOW *menu, int menu_y, int menu_x)
+int get_board_size(WINDOW *menu, int menu_y, int menu_x)
 {
 	int board_size = 0;
+	int bests[10] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-	mvwprintw(menu, menu_y * 0.15, menu_x / 2 - 2, "%s", "2048");
-	mvwprintw(menu, menu_y * 0.25, menu_x / 2 - 20, "%s", "What board size do you want? 4x4 or 5x5?");
-	mvwprintw(menu, menu_y * 0.35, menu_x / 2 - 7, "%s", "(press 4 or 5)");
+	int start_y = menu_y / 17;
+	int start_x = menu_x / 2;
+
+	mvwprintw(menu, start_y + 0, start_x - 16, " ____     ___    _  _      ___  ");
+	mvwprintw(menu, start_y + 1, start_x - 16, "|___ \\   / _ \\  | || |    ( _ ) ");
+	mvwprintw(menu, start_y + 2, start_x - 16, "  __) | | | | | | || |_   / _ \\ ");
+	mvwprintw(menu, start_y + 3, start_x - 16, " / __/  | |_| | |__   _| | (_) |");
+	mvwprintw(menu, start_y + 4, start_x - 16, "|_____|  \\___/     |_|    \\___/ ");
+
+	mvwprintw(menu, start_y + 7, start_x - 20, "%s", "What board size do you want? 4x4 or 5x5?");
+	mvwprintw(menu, start_y + 8, start_x - 7, "%s", "(press 4 or 5)");
+	if (get_10_best_score(bests) < 0)
+		mvwprintw(menu, start_y + 11, start_x - 19, "%s", "Error during parsing of best score file");
+	else
+	{
+		mvwprintw(menu, start_y + 11, start_x - 6, "%s", "Best scores :");
+		for (int i = 0; i < 10 && bests[i] > 0; i++)
+		{
+			if (i % 2)
+				mvwprintw(menu, start_y + 12 + i, menu_x * 0.7, "%d: %d", i + 1, bests[i]);
+			else
+				mvwprintw(menu, start_y + 13 + i, menu_x * 0.2, "%d: %d", i + 1, bests[i]);
+		}
+	}
+
 	wrefresh(menu);
 
 	wtimeout(menu, 100);
@@ -185,7 +208,7 @@ int	get_board_size(WINDOW *menu, int menu_y, int menu_x)
 	return (board_size - 48);
 }
 
-int	lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
+int lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 {
 	char answer = 0;
 
@@ -212,7 +235,7 @@ int	lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 	return (answer);
 }
 
-int	win_menu(WINDOW *menu, int menu_y, int menu_x)
+int win_menu(WINDOW *menu, int menu_y, int menu_x)
 {
 	char answer = 0;
 
@@ -242,11 +265,12 @@ int	win_menu(WINDOW *menu, int menu_y, int menu_x)
 }
 
 WINDOW *create_newwin(int height, int width, int starty, int startx)
-{	WINDOW *local_win;
+{
+	WINDOW *local_win;
 
 	local_win = newwin(height, width, starty, startx);
 	keypad(local_win, TRUE);
-	box(local_win, 0 , 0);
+	box(local_win, 0, 0);
 	wrefresh(local_win);
 
 	return local_win;
