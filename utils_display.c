@@ -116,18 +116,16 @@ void init_win_params(WIN *p_win, int board_size, int max_x, int max_y)
 	p_win->box_height = max_y * 0.2;
 	p_win->box_width = max_x * 0.2;
 
-	if (p_win->box_height < 3 || p_win->box_width < 8)
+	while (p_win->box_height < 3 || p_win->box_width < 8)
 	{
-		printw("Your terminal isn't big enough. Please enlarge it (press any "
-		       "key to close).");
-		while (1)
-		{
-			if (getch())
-			{
-				endwin();
-				exit(1);
-			}
-		}
+		clear();
+		mvprintw(0, 0, "Your terminal isn't big enough. Please enlarge it.");
+		refresh();
+
+		wgetch(stdscr);
+		getmaxyx(stdscr, max_y, max_x);
+		p_win->box_height = max_y * 0.2;
+		p_win->box_width = max_x * 0.2;
 	}
 
 	p_win->height = board_size * (p_win->box_height - 1) + 1;
@@ -177,7 +175,7 @@ int	get_board_size(WINDOW *menu, int menu_y, int menu_x)
 		board_size = wgetch(menu);
 		if (board_size == ERR)
 			continue;
-		if (board_size == 52 || board_size == 53)
+		if (board_size == 52 || board_size == 53 || board_size == 27)
 			break;
 	}
 
@@ -204,7 +202,7 @@ int	lose_menu(WINDOW *menu, int menu_y, int menu_x, int score)
 		answer = wgetch(menu);
 		if (answer == ERR)
 			continue;
-		if (answer == 121 || answer == 110)
+		if (answer == 121 || answer == 110 || answer == 27)
 			break;
 	}
 
@@ -226,10 +224,14 @@ int	win_menu(WINDOW *menu, int menu_y, int menu_x)
 	mvwprintw(menu, menu_y * 0.6, menu_x / 2 - 23, "%s", "You will have to press ESC to finish your game.)");
 	mvwprintw(menu, menu_y * 0.8, menu_x / 2 - 8, "%s", "(press R, C or S)");
 	wrefresh(menu);
-	while (1)
+
+	wtimeout(menu, 100);
+	while (!g_signal)
 	{
 		answer = wgetch(menu);
-		if (answer == 114 || answer == 99 || answer == 115)
+		if (answer == ERR)
+			continue;
+		if (answer == 114 || answer == 99 || answer == 115 || answer == 27)
 			break;
 	}
 
@@ -243,6 +245,7 @@ WINDOW *create_newwin(int height, int width, int starty, int startx)
 {	WINDOW *local_win;
 
 	local_win = newwin(height, width, starty, startx);
+	keypad(local_win, TRUE);
 	box(local_win, 0 , 0);
 	wrefresh(local_win);
 
